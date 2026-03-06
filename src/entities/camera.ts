@@ -1,3 +1,4 @@
+import type { GameState } from "../lib/game";
 import { HUD } from "./hud";
 export class Camera {
   x: number;
@@ -16,7 +17,8 @@ export class Camera {
     width: number,
     height: number,
     speed: number,
-    universeSize: number
+    universeSize: number,
+    gameState: GameState,
   ) {
     this.x = x;
     this.y = y;
@@ -24,7 +26,7 @@ export class Camera {
     this.height = height;
     this.speed = speed;
     this.universeSize = universeSize;
-    this.hud = new HUD(0, 0, this.width, this.height);
+    this.hud = new HUD(0, 0, this.width, this.height, gameState);
     this.controls();
     this.resize();
   }
