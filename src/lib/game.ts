@@ -11,7 +11,7 @@ export class Game {
       window.innerWidth,
       window.innerHeight,
       16,
-      size * scale,
+      size * scale
     );
   }
   tick() {
@@ -25,7 +25,7 @@ export class Game {
       this.camera.y,
       this.camera.width,
       this.camera.height,
-      ctx,
+      ctx
     );
     this.camera.render(ctx);
   }

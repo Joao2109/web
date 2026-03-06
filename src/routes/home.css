@@ -6,3 +6,6 @@ main {
   justify-content: center;
   align-items: center;
 }
+canvas {
+  touch-action: none;
+}

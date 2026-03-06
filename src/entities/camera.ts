@@ -14,7 +14,7 @@ export class Camera {
     width: number,
     height: number,
     speed: number,
-    universeSize: number,
+    universeSize: number
   ) {
     this.x = x;
     this.y = y;
@@ -26,12 +26,52 @@ export class Camera {
     this.resize();
   }
   controls() {
+    let dragging: boolean = false;
+    let lastX: number = 0;
+    let lastY: number = 0;
     document.addEventListener("keydown", (e) => {
       this.keys[e.code] = true;
     });
     document.addEventListener("keyup", (e) => {
       this.keys[e.code] = false;
     });
+    document.addEventListener("mousedown", (e) => {
+      dragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+    document.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      move(e.clientX, e.clientY);
+    });
+    document.addEventListener("mouseup", () => {
+      dragging = false;
+      lastX = 0;
+      lastY = 0;
+    });
+    document.addEventListener("touchstart", (e) => {
+      dragging = true;
+      lastX = e.touches[0].clientX;
+      lastY = e.touches[0].clientY;
+    });
+    document.addEventListener("touchmove", (e) => {
+      if (!dragging) return;
+      e.preventDefault();
+      move(e.touches[0].clientX, e.touches[0].clientY);
+    });
+    document.addEventListener("touchend", () => {
+      dragging = false;
+    });
+    const move = (x: number, y: number) => {
+      const dx = x - lastX;
+      const dy = y - lastY;
+      this.x -= dx;
+      this.y -= dy;
+      lastX = x;
+      lastY = y;
+      this.x = Math.max(0, Math.min(this.x, this.universeSize - this.width));
+      this.y = Math.max(0, Math.min(this.y, this.universeSize - this.height));
+    };
   }
   resize() {
     window.addEventListener("resize", () => {
@@ -50,7 +90,7 @@ export class Camera {
     this.dy =
       (this.keys["KeyS"] || this.keys["ArrowDown"] ? 1 : 0) -
       (this.keys["KeyW"] || this.keys["ArrowUp"] ? 1 : 0);
-    const length = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+    const length = Math.hypot(this.dx, this.dy);
     if (length > 0) {
       this.x += (this.dx / length) * this.speed;
       this.y += (this.dy / length) * this.speed;
