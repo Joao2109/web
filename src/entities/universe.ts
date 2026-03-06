@@ -6,7 +6,6 @@ export class Universe {
   size: number;
   scale: number;
   constructor(size: number, planetCount: number, scale: number) {
-    console.log(size);
     this.size = size;
     this.scale = scale;
     this.generatePlanets(planetCount);
@@ -75,15 +74,26 @@ export class Universe {
         Math.hypot(a.x - this.size / 2, a.y - this.size / 2) -
         Math.hypot(b.x - this.size / 2, b.y - this.size / 2),
     );
-    console.log(this.planets);
   }
   generateHyperspaceLanes() {
     this.planets.forEach((planet, index) => {
-      for (let i = index + 1; i < this.planets.length; i++) {
+      const nearestPlanets = this.planets
+        .slice(index + 1)
+        .filter(
+          (p) => Math.hypot(planet.x - p.x, planet.y - p.y) < 10 * this.scale,
+        )
+        .sort(
+          (a, b) =>
+            Math.hypot(a.x - this.size / 2, a.y - this.size / 2) -
+            Math.hypot(b.x - this.size / 2, b.y - this.size / 2),
+        )
+        .slice(0, 3);
+      console.log(nearestPlanets);
+      for (let i = 0; i < nearestPlanets.length; i++) {
         if (
           Math.hypot(
-            planet.x - this.planets[i].x,
-            planet.y - this.planets[i].y,
+            planet.x - nearestPlanets[i].x,
+            planet.y - nearestPlanets[i].y,
           ) <
           10 * this.scale
         ) {
@@ -91,8 +101,8 @@ export class Universe {
             new HyperspaceLane(
               planet.x + this.scale / 2,
               planet.y + this.scale / 2,
-              this.planets[i].x + this.scale / 2,
-              this.planets[i].y + this.scale / 2,
+              nearestPlanets[i].x + this.scale / 2,
+              nearestPlanets[i].y + this.scale / 2,
             ),
           );
         }

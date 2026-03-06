@@ -12,7 +12,6 @@ export class Planet {
     this.y = y;
     this.scale = scale;
     this.radius = Math.ceil((Math.random() * scale) / 2) + 16;
-    console.log(this.radius);
     this.color = color;
   }
   get hyperspaceLanes(): HyperspaceLane[] {
