@@ -1,6 +1,8 @@
 import { Planet } from "./planet";
+import { HyperspaceLane } from "./hyperspace-lane";
 export class Universe {
   planets: Planet[] = [];
+  hyperspaceLanes: HyperspaceLane[] = [];
   size: number;
   scale: number;
   constructor(size: number, planetCount: number, scale: number) {
@@ -8,6 +10,7 @@ export class Universe {
     this.size = size;
     this.scale = scale;
     this.generatePlanets(planetCount);
+    this.generateHyperspaceLanes();
   }
   tick() {
     this.planets.forEach((planet) => planet.tick());
@@ -22,6 +25,16 @@ export class Universe {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, width, height);
+    this.hyperspaceLanes.forEach((lane) => {
+      // if (
+      //   lane.x1 + lane.length > x &&
+      //   lane.x1 < x + width &&
+      //   lane.y1 + lane.length > y &&
+      //   lane.y1 < y + height
+      // ) {
+      lane.render(x, y, ctx);
+      // }
+    });
     this.planets.forEach((planet) => {
       if (
         planet.x + planet.radius > x &&
@@ -63,5 +76,27 @@ export class Universe {
         Math.hypot(b.x - this.size / 2, b.y - this.size / 2),
     );
     console.log(this.planets);
+  }
+  generateHyperspaceLanes() {
+    this.planets.forEach((planet, index) => {
+      for (let i = index + 1; i < this.planets.length; i++) {
+        if (
+          Math.hypot(
+            planet.x - this.planets[i].x,
+            planet.y - this.planets[i].y,
+          ) <
+          10 * this.scale
+        ) {
+          this.hyperspaceLanes.push(
+            new HyperspaceLane(
+              planet.x + this.scale / 2,
+              planet.y + this.scale / 2,
+              this.planets[i].x + this.scale / 2,
+              this.planets[i].y + this.scale / 2,
+            ),
+          );
+        }
+      }
+    });
   }
 }

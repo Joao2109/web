@@ -1,3 +1,6 @@
+import { game } from "../lib/game";
+import type { HyperspaceLane } from "./hyperspace-lane";
+
 export class Planet {
   x: number;
   y: number;
@@ -8,8 +11,21 @@ export class Planet {
     this.x = x;
     this.y = y;
     this.scale = scale;
-    this.radius = Math.ceil((Math.random() * scale) / 8) * 8;
+    this.radius = Math.ceil((Math.random() * scale) / 2) + 16;
+    console.log(this.radius);
     this.color = color;
+  }
+  get hyperspaceLanes(): HyperspaceLane[] {
+    const lanes: HyperspaceLane[] = [];
+    game.universe.hyperspaceLanes.forEach((lane) => {
+      if (
+        (lane.x1 === this.x && lane.y1 === this.y) ||
+        (lane.x2 === this.x && lane.y2 === this.y)
+      ) {
+        lanes.push(lane);
+      }
+    });
+    return lanes;
   }
   tick() {}
   render(x: number, y: number, ctx: CanvasRenderingContext2D) {

@@ -44,8 +44,12 @@ export class Camera {
     });
   }
   tick() {
-    this.dx = (this.keys["KeyD"] ? 1 : 0) - (this.keys["KeyA"] ? 1 : 0);
-    this.dy = (this.keys["KeyS"] ? 1 : 0) - (this.keys["KeyW"] ? 1 : 0);
+    this.dx =
+      (this.keys["KeyD"] || this.keys["ArrowRight"] ? 1 : 0) -
+      (this.keys["KeyA"] || this.keys["ArrowLeft"] ? 1 : 0);
+    this.dy =
+      (this.keys["KeyS"] || this.keys["ArrowDown"] ? 1 : 0) -
+      (this.keys["KeyW"] || this.keys["ArrowUp"] ? 1 : 0);
     const length = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
     if (length > 0) {
       this.x += (this.dx / length) * this.speed;

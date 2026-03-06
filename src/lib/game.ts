@@ -6,8 +6,8 @@ export class Game {
   constructor(size: number, planetCount: number, scale: number) {
     this.universe = new Universe(size * scale, planetCount, scale);
     this.camera = new Camera(
-      size * scale - window.innerWidth / 2,
-      size * scale - window.innerHeight / 2,
+      (size * scale) / 2 - window.innerWidth / 2,
+      (size * scale) / 2 - window.innerHeight / 2,
       window.innerWidth,
       window.innerHeight,
       16,
@@ -43,3 +43,5 @@ export class Game {
     loop();
   }
 }
+const size = 256;
+export const game = new Game(size, 1024, 64);
