@@ -1,3 +1,4 @@
+import { HUD } from "./hud";
 export class Camera {
   x: number;
   y: number;
@@ -8,6 +9,7 @@ export class Camera {
   keys: { [key: string]: boolean } = {};
   speed: number;
   universeSize: number;
+  hud: HUD;
   constructor(
     x: number,
     y: number,
@@ -22,6 +24,7 @@ export class Camera {
     this.height = height;
     this.speed = speed;
     this.universeSize = universeSize;
+    this.hud = new HUD(0, 0, this.width, this.height);
     this.controls();
     this.resize();
   }
