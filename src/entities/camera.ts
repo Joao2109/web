@@ -102,8 +102,6 @@ export class Camera {
     this.y = Math.max(0, Math.min(this.y, this.universeSize - this.height));
   }
   render(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = "white";
-    ctx.fillRect(this.width / 2 - 16, this.height / 2 - 1, 32, 2);
-    ctx.fillRect(this.width / 2 - 1, this.height / 2 - 16, 2, 32);
+    this.hud.render(ctx);
   }
 }

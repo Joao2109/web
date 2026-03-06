@@ -1,6 +1,13 @@
 import { Camera } from "../entities/camera";
 import { Universe } from "../entities/universe";
+export const GameState = {
+  Menu: "menu",
+  Overview: "overview",
+  Battle: "battle",
+} as const;
+export type GameState = (typeof GameState)[keyof typeof GameState];
 export class Game {
+  gameState: GameState = GameState.Menu;
   universe: Universe;
   camera: Camera;
   constructor(size: number, planetCount: number, scale: number) {
