@@ -88,7 +88,6 @@ export class Universe {
             Math.hypot(b.x - this.size / 2, b.y - this.size / 2),
         )
         .slice(0, 3);
-      console.log(nearestPlanets);
       for (let i = 0; i < nearestPlanets.length; i++) {
         if (
           Math.hypot(
