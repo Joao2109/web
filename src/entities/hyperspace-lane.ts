@@ -20,6 +20,8 @@ export class HyperspaceLane {
   }
   tick() {}
   render(x: number, y: number, ctx: CanvasRenderingContext2D) {
+    ctx.shadowColor = "lightblue";
+    ctx.shadowBlur = 10;
     ctx.strokeStyle = "white";
     ctx.lineWidth = 2;
     ctx.beginPath();

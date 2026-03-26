@@ -11,7 +11,7 @@ export class HUD {
     y: number,
     width: number,
     height: number,
-    gameState: GameState,
+    gameState: GameState
   ) {
     this.x = x;
     this.y = y;

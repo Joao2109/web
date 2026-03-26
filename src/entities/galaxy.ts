@@ -1,25 +1,25 @@
-import { Planet } from "./planet";
+import { System } from "./system";
 import { HyperspaceLane } from "./hyperspace-lane";
-export class Universe {
-  planets: Planet[] = [];
+export class Galaxy {
+  systems: System[] = [];
   hyperspaceLanes: HyperspaceLane[] = [];
   size: number;
   scale: number;
-  constructor(size: number, planetCount: number, scale: number) {
+  constructor(size: number, systemCount: number, scale: number) {
     this.size = size;
     this.scale = scale;
-    this.generatePlanets(planetCount);
+    this.generateSystems(systemCount);
     this.generateHyperspaceLanes();
   }
   tick() {
-    this.planets.forEach((planet) => planet.tick());
+    this.systems.forEach((system) => system.tick());
   }
   render(
     x: number,
     y: number,
     width: number,
     height: number,
-    ctx: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D
   ) {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "black";
@@ -34,23 +34,27 @@ export class Universe {
       lane.render(x, y, ctx);
       // }
     });
-    this.planets.forEach((planet) => {
+    this.systems.forEach((system) => {
       if (
-        planet.x + planet.radius > x &&
-        planet.x < x + width &&
-        planet.y + planet.radius > y &&
-        planet.y < y + height
+        system.x + system.radius > x &&
+        system.x < x + width &&
+        system.y + system.radius > y &&
+        system.y < y + height
       ) {
-        planet.render(x, y, ctx);
+        system.render(x, y, ctx);
       }
     });
   }
-  generatePlanets(planetCount: number) {
-    this.planets = [];
+  generateSystems(systemCount: number) {
+    this.systems = [];
     const usedPositions = new Set<string>();
     let attempts = 0;
-    const planetColors = ["red", "green", "blue", "yellow", "purple"];
-    while (this.planets.length < planetCount && attempts < planetCount * 10) {
+    const systemStyles: { color: string; glow: string }[] = [
+      { color: "red", glow: "red" },
+      { color: "yellow", glow: "orange" },
+      { color: "lightblue", glow: "blue" },
+    ];
+    while (this.systems.length < systemCount && attempts < systemCount * 10) {
       const x =
         Math.floor((Math.random() * (this.size - 1)) / this.scale) * this.scale;
       const y =
@@ -58,51 +62,51 @@ export class Universe {
       const key = `${x},${y}`;
       if (!usedPositions.has(key)) {
         usedPositions.add(key);
-        this.planets.push(
-          new Planet(
+        this.systems.push(
+          new System(
             x,
             y,
             this.scale,
-            planetColors[Math.floor(Math.random() * planetColors.length)],
-          ),
+            systemStyles[Math.floor(Math.random() * systemStyles.length)]
+          )
         );
       }
       attempts++;
     }
-    this.planets.sort(
+    this.systems.sort(
       (a, b) =>
         Math.hypot(a.x - this.size / 2, a.y - this.size / 2) -
-        Math.hypot(b.x - this.size / 2, b.y - this.size / 2),
+        Math.hypot(b.x - this.size / 2, b.y - this.size / 2)
     );
   }
   generateHyperspaceLanes() {
-    this.planets.forEach((planet, index) => {
-      const nearestPlanets = this.planets
+    this.systems.forEach((system, index) => {
+      const nearestSystems = this.systems
         .slice(index + 1)
         .filter(
-          (p) => Math.hypot(planet.x - p.x, planet.y - p.y) < 10 * this.scale,
+          (s) => Math.hypot(system.x - s.x, system.y - s.y) < 10 * this.scale
         )
         .sort(
           (a, b) =>
             Math.hypot(a.x - this.size / 2, a.y - this.size / 2) -
-            Math.hypot(b.x - this.size / 2, b.y - this.size / 2),
+            Math.hypot(b.x - this.size / 2, b.y - this.size / 2)
         )
         .slice(0, 3);
-      for (let i = 0; i < nearestPlanets.length; i++) {
+      for (let i = 0; i < nearestSystems.length; i++) {
         if (
           Math.hypot(
-            planet.x - nearestPlanets[i].x,
-            planet.y - nearestPlanets[i].y,
+            system.x - nearestSystems[i].x,
+            system.y - nearestSystems[i].y
           ) <
           10 * this.scale
         ) {
           this.hyperspaceLanes.push(
             new HyperspaceLane(
-              planet.x + this.scale / 2,
-              planet.y + this.scale / 2,
-              nearestPlanets[i].x + this.scale / 2,
-              nearestPlanets[i].y + this.scale / 2,
-            ),
+              system.x + this.scale / 2,
+              system.y + this.scale / 2,
+              nearestSystems[i].x + this.scale / 2,
+              nearestSystems[i].y + this.scale / 2
+            )
           );
         }
       }

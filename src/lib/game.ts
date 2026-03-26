@@ -1,5 +1,5 @@
 import { Camera } from "../entities/camera";
-import { Universe } from "../entities/universe";
+import { Galaxy } from "../entities/galaxy";
 export const GameState = {
   Menu: "menu",
   Overview: "overview",
@@ -8,11 +8,11 @@ export const GameState = {
 export type GameState = (typeof GameState)[keyof typeof GameState];
 export class Game {
   gameState: GameState = GameState.Menu;
-  universe: Universe;
+  universe: Galaxy;
   camera: Camera;
   keys: { [key: string]: boolean } = {};
   constructor(size: number, planetCount: number, scale: number) {
-    this.universe = new Universe(size * scale, planetCount, scale);
+    this.universe = new Galaxy(size * scale, planetCount, scale);
     this.camera = new Camera(
       (size * scale) / 2 - window.innerWidth / 2,
       (size * scale) / 2 - window.innerHeight / 2,
@@ -20,7 +20,7 @@ export class Game {
       window.innerHeight,
       16,
       size * scale,
-      this.gameState,
+      this.gameState
     );
     this.controls();
   }
@@ -33,6 +33,9 @@ export class Game {
     });
     document.addEventListener("keyup", (e) => {
       this.keys[e.code] = false;
+    });
+    document.addEventListener("click", (e) => {
+      console.log(e.offsetX, e.offsetY);
     });
     document.addEventListener("mousedown", (e) => {
       switch (e.button) {
@@ -62,30 +65,39 @@ export class Game {
       lastX = e.touches[0].clientX;
       lastY = e.touches[0].clientY;
     });
-    document.addEventListener("touchmove", (e) => {
-      if (!dragging) return;
-      e.preventDefault();
-      move(e.touches[0].clientX, e.touches[0].clientY);
-    });
+    document.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!e.touches.length || !dragging) return;
+        e.preventDefault();
+        move(e.touches[0].clientX, e.touches[0].clientY);
+      },
+      { passive: false }
+    );
     document.addEventListener("touchend", () => {
       dragging = false;
     });
     const move = (x: number, y: number) => {
       const dx = x - lastX;
       const dy = y - lastY;
+      if (dx === 0 && dy === 0) return;
       this.camera.x -= dx;
       this.camera.y -= dy;
       lastX = x;
       lastY = y;
-      this.camera.x = Math.max(
+      this.camera.x = clamp(
+        this.camera.x,
         0,
-        Math.min(this.camera.x, this.camera.universeSize - this.camera.width),
+        this.camera.universeSize - this.camera.width
       );
-      this.camera.y = Math.max(
+      this.camera.y = clamp(
+        this.camera.y,
         0,
-        Math.min(this.camera.y, this.camera.universeSize - this.camera.height),
+        this.camera.universeSize - this.camera.height
       );
     };
+    const clamp = (val: number, min: number, max: number) =>
+      Math.max(min, Math.min(val, max));
   }
   tick() {
     this.camera.dx =
@@ -104,7 +116,7 @@ export class Game {
       this.camera.y,
       this.camera.width,
       this.camera.height,
-      ctx,
+      ctx
     );
     this.camera.render(ctx);
   }

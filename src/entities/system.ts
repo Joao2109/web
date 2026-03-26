@@ -1,18 +1,22 @@
 import { game } from "../lib/game";
 import type { HyperspaceLane } from "./hyperspace-lane";
-
-export class Planet {
+export class System {
   x: number;
   y: number;
   scale: number;
   radius: number;
-  color: string;
-  constructor(x: number, y: number, scale: number, color: string) {
+  style: { color: string; glow: string };
+  constructor(
+    x: number,
+    y: number,
+    scale: number,
+    style: { color: string; glow: string }
+  ) {
     this.x = x;
     this.y = y;
     this.scale = scale;
     this.radius = Math.ceil((Math.random() * scale) / 2) + 16;
-    this.color = color;
+    this.style = style;
   }
   get hyperspaceLanes(): HyperspaceLane[] {
     const lanes: HyperspaceLane[] = [];
@@ -28,14 +32,16 @@ export class Planet {
   }
   tick() {}
   render(x: number, y: number, ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.color;
+    ctx.shadowColor = this.style.glow;
+    ctx.shadowBlur = this.scale / 4;
+    ctx.fillStyle = this.style.color;
     ctx.beginPath();
     ctx.arc(
       this.x + this.scale / 2 - x,
       this.y + this.scale / 2 - y,
       this.radius / 3,
       0,
-      Math.PI * 2,
+      Math.PI * 2
     );
     ctx.fill();
   }
